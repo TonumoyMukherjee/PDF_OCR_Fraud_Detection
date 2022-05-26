@@ -1,13 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-import UploadPDF from './components/uploadPDF/uploadPDF.js';
+import HomePage from './components/HomePage/HomePage.js';
 
 function App() {
   return (
     <div className="App">
-      <UploadPDF>
-
-      </UploadPDF>
+      <HomePage />
     </div>
   );
 }

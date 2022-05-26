@@ -1,0 +1,19 @@
+.uploadBtn{
+    width: max-content;
+    margin-top: 15px;
+    /* height: 90px; */
+    background-color: #E5322D;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-right: auto;
+    margin-left: auto;
+
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 20px;
+}
+.uploadBtn:hover{
+    background-color: #161616;
+    transition-duration: 0.4s;
+}
