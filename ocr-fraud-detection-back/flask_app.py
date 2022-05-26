@@ -94,6 +94,7 @@ class predict(Resource):
         pred = False
         args = text_parser.parse_args()
         filename = args['text']
+        print("ARGS=>",args)
         df = table_extraction_from_pdf(filename)
         date_cols = get_date_columns(df)
         transaction_cols = get_transaction_columns(df)
@@ -126,6 +127,7 @@ class predict(Resource):
 
 
 api.add_resource(predict,'/predict')
+
 # api.add_resource(predict_redact,'/predict_redact/<string:module>/<string:model>')
 # api.add_resource(redact,'/redact/<string:module>/<string:model>')
 # api.add_resource(predict_extension,'/predict_extension/<string:module>/<string:model>')
