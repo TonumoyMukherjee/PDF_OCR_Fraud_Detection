@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import './uploadPDF.css';
 import axios from 'axios';
+import { Col, Container, Row, Dropdown, Button, Modal } from 'react-bootstrap';
+import page1 from './images/output_000.jpg';
+import page2 from './images/output_001.jpg';
+import page3 from './images/output_001.jpg';
+import page4 from './images/output_001.jpg';
+
 class UploadPDF extends React.Component {
     constructor(props) {
         super(props);
@@ -25,7 +31,7 @@ class UploadPDF extends React.Component {
         bodyFormData.append('text', 'C:\\work_of_tuteck\\PDF_OCR_Fraud_Detection\\ocr-fraud-detection-back\\Dinesh\\SBI statement.pdf');
         axios({
             method: "post",
-            url: "http://127.0.0.1:5000/predict",
+            url: "http://192.168.0.173:4000/predict",
             data: bodyFormData,
             headers: { "Content-Type": "multipart/form-data" },
         })
@@ -44,13 +50,32 @@ class UploadPDF extends React.Component {
 
         return (
             <>
-                <input type={"file"} accept="pdf"
+
+                <input type={"file"} accept="pdf" className='uploadArea'
                     onChange={(e) => this.setState({ selectedPDF: e.target.files[0], fullPath: e.target.files[0].mozFullPath })}></input>
                 <div className='uploadBtn' onClick={() => { this.sendPDFtoBackend() }}>Upload Transaction File</div>
 
-                <p>
-                    {this.state.resData}
-                </p>
+
+
+                <div className='afterDetection'>
+                    <div className="row">
+                        <h1>After Detection</h1><br />
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <img src={page1} className="image-style"></img>
+                            <img src={page2} className="image-style"></img>
+                            <img src={page3} className="image-style"></img>
+                            <img src={page4} className="image-style"></img>
+                        </div>
+                        <div className="col-sm-6">
+                            <img src={page1} className="image-style"></img>
+                            <img src={page2} className="image-style"></img>
+                            <img src={page3} className="image-style"></img>
+                            <img src={page4} className="image-style"></img>
+                        </div>
+                    </div>
+                </div>
             </>
         )
     }
