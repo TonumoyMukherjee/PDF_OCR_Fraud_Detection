@@ -12,23 +12,33 @@ class UploadPDF extends React.Component {
             fullPath: null,
             IsResponseRecieved: false,
             IsUploadClicked: false,
+            totalPage: '',
+            beforeImages: [],
+            afterImages: []
         }
-        this.totalPage = 31;
-        this.pages = [];
-        this.highlightpages = [];
-        for (let i = 0; i <= this.totalPage; i++) {
+    }
+
+    makePages(totalPage) {
+        let pages = [];
+        let highlightpages = [];
+        for (let i = 0; i <= totalPage; i++) {
             if (i < 10) {
-                this.pages.push("output_00" + i + ".jpg");
-                this.highlightpages.push("output_00" + i + ".jpg");
+                pages.push("output_00" + i + ".jpg");
+                highlightpages.push("output_00" + i + ".jpg");
             }
             else {
-                this.pages.push("output_0" + i + ".jpg");
-                this.highlightpages.push("output_0" + i + ".jpg");
+                pages.push("output_0" + i + ".jpg");
+                highlightpages.push("output_0" + i + ".jpg");
             }
-
         }
-        console.log(this.pages);
+        this.setState({
+            beforeImages: pages,
+            afterImages: highlightpages
+        })
+        // console.log(pages)
+        // console.log(highlightpages)
     }
+
     sendPDFtoBackend() {
 
         this.setState({
@@ -53,13 +63,14 @@ class UploadPDF extends React.Component {
             headers: { "Content-Type": "multipart/form-data" },
         })
             .then((resData) => {
-                console.log(resData.data);
+                let number_of_pages = JSON.parse(resData.data.replaceAll('NaN', '0')).number_of_pages;
+
                 this.setState({
-                    IsResponseRecieved: true
+                    IsResponseRecieved: true,
+                    resData: JSON.parse(resData.data.replaceAll('NaN', '0')),
+                    totalPage: number_of_pages
                 })
-                this.setState({
-                    resData: resData.data
-                })
+                this.makePages(number_of_pages);
             })
             .catch((err) => {
                 console.log("ERROR==>>", err);
@@ -88,16 +99,17 @@ class UploadPDF extends React.Component {
                     <>
                         <div className='afterDetection'>
                             <div className="row">
-                                <h1>After Detection</h1><br />
+                                <div className="col-sm-6"><h1>Before</h1></div>
+                                <div className="col-sm-6"><h1>After</h1></div>
                             </div>
                             <div className="row">
                                 <div className="col-sm-6">
 
-                                    {this.pages?.map((image_name) => (
+                                    {this.state.beforeImages?.map((image_name) => (
                                         <img src={"http://127.0.0.1:5000/getfile/" + image_name} className='image-style' />
                                     ))}
                                 </div>
-                                {this.highlightpages?.map((image_name) => (
+                                {this.state.afterImages?.map((image_name) => (
                                     <img src={"http://127.0.0.1:5000/gethighlightedfile/" + image_name} className='image-style' />
                                 ))}
                             </div>
