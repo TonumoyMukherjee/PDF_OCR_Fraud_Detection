@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request
 from flask_restful import Api, Resource, reqparse
 import werkzeug
 import pandas as pd
@@ -145,10 +145,8 @@ def get_bank_statement_info(all_filepaths):
         info['outliers_found'] = False
     
     
-    print(bank_statement_df, pages_retrieved,info)
-    # return bank_statement_df, pages_retrieved,info
-
-    # return bank_statement_df, pages_retrieved, info
+    
+    return bank_statement_df, pages_retrieved, info
 
 
 @app.route("/")
@@ -276,22 +274,6 @@ api.add_resource(predict,'/predict')
 # api.add_resource(predict_redact,'/predict_redact/<string:module>/<string:model>')
 # api.add_resource(redact,'/redact/<string:module>/<string:model>')
 # api.add_resource(predict_extension,'/predict_extension/<string:module>/<string:model>')
-
-@app.route('/getfile/<fileName>')
-def returnFile(fileName):
-    print(fileName)
-    response = send_from_directory(path='./AXIS_statement/',
-                                   directory='./AXIS_statement/', filename=fileName)
-    response.headers['my-custom-header'] = 'my-custom-status-0'
-    return response
-
-@app.route('/gethighlightedfile/<fileName>')
-def returnHighlightedFile(fileName):
-    print(fileName)
-    response = send_from_directory(path='./AXIS_statement_highlight/',
-                                   directory='./AXIS_statement_highlight/', filename=fileName)
-    response.headers['my-custom-header'] = 'my-custom-status-0'
-    return response
 
 
 if __name__ == "__main__":

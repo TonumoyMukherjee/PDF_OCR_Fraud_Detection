@@ -63,16 +63,10 @@ class UploadPDF extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <img src={page1} className="image-style"></img>
-                            <img src={page2} className="image-style"></img>
-                            <img src={page3} className="image-style"></img>
-                            <img src={page4} className="image-style"></img>
+                            <img src="http://127.0.0.1:5000/getfile/output_000.jpg" className='image-style' />
                         </div>
                         <div className="col-sm-6">
-                            <img src={page1} className="image-style"></img>
-                            <img src={page2} className="image-style"></img>
-                            <img src={page3} className="image-style"></img>
-                            <img src={page4} className="image-style"></img>
+                            <img src="http://127.0.0.1:5000/gethighlightedfile/output_000.jpg" className='image-style' />
                         </div>
                     </div>
                 </div>
