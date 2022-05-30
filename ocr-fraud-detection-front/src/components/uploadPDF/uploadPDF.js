@@ -88,8 +88,8 @@ class UploadPDF extends React.Component {
                     <>
                         <div className='afterDetection'>
                             <div className="row">
-                                <div className="col-sm-6"><h1>Before</h1></div>
-                                <div className="col-sm-6"><h1>After</h1></div>
+                                <div className="col-sm-6"><div className='PDFHeading'>Before</div></div>
+                                <div className="col-sm-6"><div className='PDFHeading'>After</div></div>
                             </div>
                             <div className="row">
                                 <div className="col-sm-6">
