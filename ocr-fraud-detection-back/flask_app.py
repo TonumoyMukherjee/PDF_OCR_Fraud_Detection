@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request
 from flask_restful import Api, Resource, reqparse
 import werkzeug
 import pandas as pd
@@ -145,10 +145,8 @@ def get_bank_statement_info(all_filepaths):
         info['outliers_found'] = False
     
     
-    print(bank_statement_df, pages_retrieved,info)
-    # return bank_statement_df, pages_retrieved,info
-
-    # return bank_statement_df, pages_retrieved, info
+    
+    return bank_statement_df, pages_retrieved, info
 
 
 @app.route("/")
@@ -228,14 +226,16 @@ class predict(Resource):
             for outlier in outliers.values():
                 outlier_coordinates['pg_no'] = outlier['pg_no']
                 
-                print(outlier['pg_no'])
-                print(outlier['Particulars '])
-                print(name_var + '_out/' + '/output_{:03}.csv'.format(outlier['pg_no'] - 1))
+                # print(outlier['pg_no'])
+                # print(outlier['Particulars '])
+                # print(name_var + '_out/' + '/output_{:03}.csv'.format(outlier['pg_no'] - 1))
                 with open(name_var + '_out/' + '/output_{:03}.csv'.format(outlier['pg_no'] - 1), 'r') as csvfile:
                     filereader = csv.reader(csvfile, delimiter=' ', quotechar='|')
                     row_nbr = 0
                     for row in filereader:
-                        if outlier['Particulars '][0:10] in ','.join(row):
+                        if outlier['Particulars '][0:22] in ','.join(row):
+                            print(row)
+                            print(outlier['Particulars '])
                             outlier_coordinates[row_nbr] = row_nbr 
                             with open(name_var + '_out_bb' + '/output_{:03}.json'.format(outlier['pg_no'] - 1), 'r') as openfile:  
                                 # Reading from json file
@@ -247,7 +247,8 @@ class predict(Resource):
                                                "Width":coord[sorted(coord.keys())[-1]]["Left"] + coord[sorted(coord.keys())[-1]]["Width"], 
                                                 "Height":coord[sorted(coord.keys())[-1]]["Top"] + coord[sorted(coord.keys())[-1]]["Height"]}
                                 outlier_coordinates['coordinates'] = coord
-                                outlier_coord.append({'row_nbr': row_nbr, 'pg_no': outlier['pg_no'] - 1, 'coord':coord, 'final_coord': final_coord})
+                                # outlier_coord.append({'row_nbr': row_nbr, 'pg_no': outlier['pg_no'] - 1, 'coord':coord, 'final_coord': final_coord})
+                                outlier_coord.append({'row_nbr': row_nbr, 'pg_no': outlier['pg_no'] - 1, 'final_coord': final_coord})
                         row_nbr += 1
                 # result['outlier_coordinates'] =  outlier_coordinates   
                 result['outlier_coord'] =  outlier_coord   
@@ -276,22 +277,6 @@ api.add_resource(predict,'/predict')
 # api.add_resource(predict_redact,'/predict_redact/<string:module>/<string:model>')
 # api.add_resource(redact,'/redact/<string:module>/<string:model>')
 # api.add_resource(predict_extension,'/predict_extension/<string:module>/<string:model>')
-
-@app.route('/getfile/<fileName>')
-def returnFile(fileName):
-    print(fileName)
-    response = send_from_directory(path='./AXIS_statement/',
-                                   directory='./AXIS_statement/', filename=fileName)
-    response.headers['my-custom-header'] = 'my-custom-status-0'
-    return response
-
-@app.route('/gethighlightedfile/<fileName>')
-def returnHighlightedFile(fileName):
-    print(fileName)
-    response = send_from_directory(path='./AXIS_statement_highlight/',
-                                   directory='./AXIS_statement_highlight/', filename=fileName)
-    response.headers['my-custom-header'] = 'my-custom-status-0'
-    return response
 
 
 if __name__ == "__main__":
