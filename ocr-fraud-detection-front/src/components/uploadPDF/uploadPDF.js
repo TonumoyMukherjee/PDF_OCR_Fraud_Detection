@@ -44,14 +44,6 @@ class UploadPDF extends React.Component {
         this.setState({
             IsUploadClicked: true
         })
-        // console.log("Send PDF to BACK");
-        // console.log(this.state.fullPath);
-
-        // const bodyFormData = JSON.stringify({
-        //     "file": this.state.selectedPDF,
-        //     "text": "C:\\work_of_tuteck\\PDF_OCR_Fraud_Detection\\ocr-fraud-detection-back\\Dinesh\\SBI statement.pdf",
-        // });
-
 
         var bodyFormData = new FormData();
         // bodyFormData.append('file', this.state.selectedPDF);
@@ -91,9 +83,6 @@ class UploadPDF extends React.Component {
                         :
                         <></>
                 }
-
-
-
 
                 {this.state.IsResponseRecieved ?
                     <>
