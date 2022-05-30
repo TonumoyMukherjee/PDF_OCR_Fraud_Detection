@@ -12,6 +12,8 @@ import os
 import shutil
 from flask_cors import CORS
 import csv
+from fpdf import FPDF
+from PIL import Image
 
 app = Flask(__name__)
 CORS(app)
@@ -303,12 +305,36 @@ class predict(Resource):
             thickness = 8
 
             image = cv2.rectangle(image, highlight_points[0], highlight_points[1], color, thickness)
+
         outlier = outlier_coord[-1]
         cv2.imwrite("AXIS_statement_highlight/output_{:03}.jpg".format(outlier['pg_no']), image)
 
         '/output_{:03}.csv'.format(outlier['pg_no'] - 1)
         # cv2.imwrite("AXIS_statement_highlight/output_005.jpg", image)
 
+
+        # IMAGE TO PDF DOWNLOAD CODE IS HERE
+        highlightpages =[]
+        for i in range (0, num_pages):
+            if i < 10:
+                highlightpages.append("./AXIS_statement_highlight/output_00" + str(i) + ".jpg");
+            else:
+                highlightpages.append("./AXIS_statement_highlight/output_0" + str(i) + ".jpg");
+            
+        #create a instance of fpdf
+        pdf = FPDF()
+        pdf.set_auto_page_break(0)
+        img_list = highlightpages
+        #add new pages with the image 
+        for img in img_list:
+            pdf.add_page()
+            pdf.image(img,0,10,210,300)
+        #save the output file   
+        pdf.output("./AXIS_statement_pdf/Highlighted.pdf")
+        print("Adding all your images into a pdf file")
+        print("Images pdf is created and saved it into the following path folder:\n",
+            os.getcwd())
+        
         return result
 
         
@@ -330,6 +356,13 @@ def returnHighlightedFile(fileName):
     response.headers['my-custom-header'] = 'my-custom-status-0'
     return response
 
+# DOWNLOAD AS PDF
+@app.route('/downloadaspdf')
+def downloadAsPdf():
+    response = send_from_directory(path='./AXIS_statement_pdf/',
+                                   directory='./AXIS_statement_pdf/', filename="Highlighted.pdf")
+    response.headers['my-custom-header'] = 'my-custom-status-0'
+    return response
 
 
 

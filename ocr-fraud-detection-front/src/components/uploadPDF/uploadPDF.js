@@ -16,6 +16,11 @@ class UploadPDF extends React.Component {
             beforeImages: [],
             afterImages: []
         }
+
+
+        // document.getElementById("downloadTheHighlightedPDF").onclick(() => {
+
+        // })
     }
 
     makePages(totalPage) {
@@ -87,6 +92,12 @@ class UploadPDF extends React.Component {
                 {this.state.IsResponseRecieved ?
                     <>
                         <div className='afterDetection'>
+                            <div className='row'>
+                                <div className='col'>
+                                    <div id="downloadTheHighlightedPDF">Download the highlighted PDF</div>
+                                    <a href='http://localhost:5000/downloadaspdf' target="_blank">Click to download</a>
+                                </div>
+                            </div>
                             <div className="row">
                                 <div className="col-sm-6"><div className='PDFHeading'>Before</div></div>
                                 <div className="col-sm-6"><div className='PDFHeading'>After</div></div>
