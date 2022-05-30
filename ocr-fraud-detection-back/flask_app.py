@@ -1,21 +1,20 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_restful import Api, Resource, reqparse
 import werkzeug
 import pandas as pd
 import numpy as np
-# import tabula
-import time
-import datetime
-# import re
 from textract_wrapper import TextractWrapper
 from pdf2image import convert_from_path
 import boto3
 import json
+import cv2
 import os
-
+import shutil
+from flask_cors import CORS
 import csv
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 text_parser = reqparse.RequestParser()
 text_parser.add_argument("text", type=str, help="needed a text input in string format", location='form')
@@ -173,6 +172,7 @@ class predict(Resource):
             os.mkdir(name_var + '_out_json')
             os.mkdir(name_var + '_out_bb')
             os.mkdir(name_var + '_out')
+            
             for image in os.listdir(name_var):
 
                 got_blocks = twrapper.analyze_file(feature_types, document_file_name=name_var + '/'+ image)
@@ -182,7 +182,6 @@ class predict(Resource):
                 with open(name_var + '_out_json/' + image.replace('jpg', 'json'), "w") as outfile:
                     outfile.write(json_object)
                 
-
                 # Get the text blocks
                 blocks=got_blocks['Blocks']
 
@@ -251,23 +250,85 @@ class predict(Resource):
                                 outlier_coord.append({'row_nbr': row_nbr, 'pg_no': outlier['pg_no'] - 1, 'final_coord': final_coord})
                         row_nbr += 1
                 # result['outlier_coordinates'] =  outlier_coordinates   
-                result['outlier_coord'] =  outlier_coord   
+                result['outlier_coord'] =  outlier_coord  
+                num_pages = len(os.listdir(name_var))
+                result['number_of_pages'] = num_pages 
                  
             
+        for filename in os.listdir("AXIS_statement"):
+            if filename.endswith('.jpg'):
+                shutil.copy( "AXIS_statement/" + filename, "AXIS_statement_highlight")
+                print(filename)
 
 
-        # if len(outlier_ind) > 0:
-            
-        #     result['total_transactions'] = rows
-        #     result['outliers_found'] = True
-        #     result['outlier_indices'] = outlier_ind
-        #     result['outliers'] = df[outliers].to_dict('index')
-        # else:
-        #     result['outliers_found'] = False
-            
+        outlier_coord = result['outlier_coord']
+        prev_page = -1
+        image_coord = None
+        for outlier in outlier_coord:
+            image_coord = outlier['final_coord']
+            print(prev_page)
+            print(outlier["pg_no"])
+            if prev_page == -1:
+                    print("note same page")
+                    # read image
+                    image = cv2.imread("AXIS_statement/output_005.jpg")
+                    # Window name in which image is displayed
+                    window_name = 'Image'
+            else:
+                if prev_page != outlier["pg_no"]:
+                    print("note same page")
+                    cv2.imwrite("AXIS_statement_highlight/output_{:03}.jpg".format(prev_page), image)
+                    
+                    # read image
+                    image = cv2.imread("AXIS_statement/output_005.jpg")
+                    # Window name in which image is displayed
+                    window_name = 'Image'
+
+            prev_page =  outlier['pg_no'] 
+
+            # image dimension
+            image_height = image.shape[0]
+            image_width = image.shape[1]
+            coord_top = int(image.shape[0] * image_coord["Top"])
+            coord_height = int(image.shape[0] * image_coord["Height"])
+            coord_left = int(image.shape[1] * image_coord["Left"])
+            coord_width = int(image.shape[1] * image_coord["Width"])
+
+            # # highlight array
+            highlight_points = [[coord_left,coord_top],[coord_width,coord_height]]
+
+            # Blue color in BGR
+            color = (0, 0, 255)
+            # Line thickness of 2 px
+            thickness = 8
+
+            image = cv2.rectangle(image, highlight_points[0], highlight_points[1], color, thickness)
+        outlier = outlier_coord[-1]
+        cv2.imwrite("AXIS_statement_highlight/output_{:03}.jpg".format(outlier['pg_no']), image)
+
+        '/output_{:03}.csv'.format(outlier['pg_no'] - 1)
+        # cv2.imwrite("AXIS_statement_highlight/output_005.jpg", image)
+
         return result
 
         
+
+
+@app.route('/getfile/<fileName>')
+def returnFile(fileName):
+    print(fileName)
+    response = send_from_directory(path='./AXIS_statement/',
+                                   directory='./AXIS_statement/', filename=fileName)
+    response.headers['my-custom-header'] = 'my-custom-status-0'
+    return response
+
+@app.route('/gethighlightedfile/<fileName>')
+def returnHighlightedFile(fileName):
+    print(fileName)
+    response = send_from_directory(path='./AXIS_statement_highlight/',
+                                   directory='./AXIS_statement_highlight/', filename=fileName)
+    response.headers['my-custom-header'] = 'my-custom-status-0'
+    return response
 
 
 
