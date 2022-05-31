@@ -273,7 +273,8 @@ class predict(Resource):
             if prev_page == -1:
                     print("note same page")
                     # read image
-                    image = cv2.imread("AXIS_statement/output_005.jpg")
+                    # image = cv2.imread("AXIS_statement/output_005.jpg")
+                    image = cv2.imread("AXIS_statement_highlight/output_{:03}.jpg".format(outlier["pg_no"]))
                     # Window name in which image is displayed
                     window_name = 'Image'
             else:
@@ -282,7 +283,8 @@ class predict(Resource):
                     cv2.imwrite("AXIS_statement_highlight/output_{:03}.jpg".format(prev_page), image)
                     
                     # read image
-                    image = cv2.imread("AXIS_statement/output_005.jpg")
+                    # image = cv2.imread("AXIS_statement/output_005.jpg")
+                    image = cv2.imread("AXIS_statement_highlight/output_{:03}.jpg".format(outlier["pg_no"]))
                     # Window name in which image is displayed
                     window_name = 'Image'
 
