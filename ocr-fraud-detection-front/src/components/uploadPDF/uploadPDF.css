@@ -1,6 +1,6 @@
 .uploadBtn{
     width: max-content;
-    margin-top: 15px;
+    margin-top: 25px;
     /* height: 90px; */
     background-color: #E5322D;
     border-radius: 15px;
@@ -32,7 +32,7 @@
 }
 
 .afterDetection{
-    margin-top: 100px;
+    margin-top: 40px;
 }
 .loadingstyle{
     display: block;
@@ -60,3 +60,65 @@
     display: block;
     font-size: 15px;
 }
+
+.goBackButton{
+    height: max-content;
+    width: max-content;
+    padding:10px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #E5322D;
+    color: white;
+    font-size: larger;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.downloadPDFDiv{
+    margin-top: 20px;
+    height: max-content;
+    width: max-content;
+    padding:10px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #bcbcbc;
+    color: rgb(20, 20, 20);
+    font-size: larger;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+a{
+    color: rgb(20, 20, 20);
+}
+
+
+.uploadDiv{
+    height: 230px;
+    width:400px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #d5d5d5;
+    border-radius: 25px;
+    border: 2px dashed #606060;
+    padding-top: 55px;
+    font-size: 25px;
+}
+input{
+    display: none !important;
+  }
+  label{
+    cursor:pointer;
+    color: #606060;
+  }
+  #imageName{
+    color:#606060;
+  }
+
+  .PDFName{
+      font-size: 13px;
+      color: white;
+      padding: 7px;
+      background-color: #616161;
+      border-radius: 10px;
+  }

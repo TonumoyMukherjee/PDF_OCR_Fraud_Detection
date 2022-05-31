@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './uploadPDF.css';
 import axios from 'axios';
 import { Col, Container, Row, Dropdown, Button, Modal } from 'react-bootstrap';
+import $ from 'jquery';
 
 class UploadPDF extends React.Component {
     constructor(props) {
@@ -16,17 +17,34 @@ class UploadPDF extends React.Component {
             beforeImages: [],
             afterImages: []
         }
+    }
 
+    componentDidMount() {
+        let input = document.getElementById("inputTag");
+        let PDFName = document.getElementById("PDFName")
 
-        // document.getElementById("downloadTheHighlightedPDF").onclick(() => {
+        input.addEventListener("change", () => {
+            let inputPDF = document.querySelector("input[type=file]").files[0];
+            PDFName.innerText = inputPDF.name;
+        })
+    }
 
-        // })
+    goBack() {
+        this.setState({
+            selectedPDF: null,
+            fullPath: null,
+            IsResponseRecieved: false,
+            IsUploadClicked: false,
+            totalPage: '',
+            beforeImages: [],
+            afterImages: []
+        })
     }
 
     makePages(totalPage) {
         let pages = [];
         let highlightpages = [];
-        for (let i = 0; i <= totalPage; i++) {
+        for (let i = 0; i < totalPage; i++) {
             if (i < 10) {
                 pages.push("output_00" + i + ".jpg");
                 highlightpages.push("output_00" + i + ".jpg");
@@ -45,33 +63,36 @@ class UploadPDF extends React.Component {
     }
 
     sendPDFtoBackend() {
+        if (this.state.selectedPDF != null) {
 
-        this.setState({
-            IsUploadClicked: true
-        })
 
-        var bodyFormData = new FormData();
-        // bodyFormData.append('file', this.state.selectedPDF);
-        bodyFormData.append('text', 'AXIS_statement.pdf');
-        axios({
-            method: "post",
-            url: "http://127.0.0.1:5000/predict",
-            data: bodyFormData,
-            headers: { "Content-Type": "multipart/form-data" },
-        })
-            .then((resData) => {
-                let number_of_pages = JSON.parse(resData.data.replaceAll('NaN', '0')).number_of_pages;
+            this.setState({
+                IsUploadClicked: true
+            })
 
-                this.setState({
-                    IsResponseRecieved: true,
-                    resData: JSON.parse(resData.data.replaceAll('NaN', '0')),
-                    totalPage: number_of_pages
+            var bodyFormData = new FormData();
+            // bodyFormData.append('file', this.state.selectedPDF);
+            bodyFormData.append('text', 'AXIS_statement.pdf');
+            axios({
+                method: "post",
+                url: "http://127.0.0.1:5000/predict",
+                data: bodyFormData,
+                headers: { "Content-Type": "multipart/form-data" },
+            })
+                .then((resData) => {
+                    let number_of_pages = JSON.parse(resData.data.replaceAll('NaN', '0')).number_of_pages;
+
+                    this.setState({
+                        IsResponseRecieved: true,
+                        resData: JSON.parse(resData.data.replaceAll('NaN', '0')),
+                        totalPage: number_of_pages
+                    })
+                    this.makePages(number_of_pages);
                 })
-                this.makePages(number_of_pages);
-            })
-            .catch((err) => {
-                console.log("ERROR==>>", err);
-            })
+                .catch((err) => {
+                    console.log("ERROR==>>", err);
+                })
+        }
     }
 
     render() {
@@ -81,8 +102,20 @@ class UploadPDF extends React.Component {
                 {
                     !this.state.IsResponseRecieved ?
                         <>
-                            <input type={"file"} accept="pdf" className='uploadArea'
-                                onChange={(e) => this.setState({ selectedPDF: e.target.files[0], fullPath: e.target.files[0].mozFullPath })}></input>
+                            <div className='uploadDiv'>
+                                <label for="inputTag">
+                                    Select PDF <br />or<br />
+                                    Drag and Drop here<br />
+                                    <span className={
+                                        this.state.selectedPDF != null ? "PDFName" : ""} id="PDFName">
+                                    </span>
+
+                                    <input id="inputTag" type={"file"} accept="pdf" className='uploadArea'
+                                        onChange={(e) => this.setState({ selectedPDF: e.target.files[0], fullPath: e.target.files[0].mozFullPath })}>
+
+                                    </input>
+                                </label>
+                            </div>
                             <div className='uploadBtn' onClick={() => { this.sendPDFtoBackend() }}>Upload Transaction File</div>
                         </>
                         :
@@ -94,8 +127,13 @@ class UploadPDF extends React.Component {
                         <div className='afterDetection'>
                             <div className='row'>
                                 <div className='col'>
-                                    <div id="downloadTheHighlightedPDF">Download the highlighted PDF</div>
-                                    <a href='http://localhost:5000/downloadaspdf' target="_blank">Click to download</a>
+                                    <div className='goBackButton'>
+                                        <div id="goBack" onClick={() => { this.goBack() }}>Go Back</div>
+                                    </div>
+                                    <div className='downloadPDFDiv'>
+                                        <div id="downloadTheHighlightedPDF">Download the highlighted PDF</div>
+                                        <a href='http://localhost:5000/downloadaspdf' target="_blank">Click to Download</a>
+                                    </div>
                                 </div>
                             </div>
                             <div className="row">
