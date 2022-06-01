@@ -130,9 +130,16 @@ class UploadPDF extends React.Component {
                                     <div className='goBackButton'>
                                         <div id="goBack" onClick={() => { this.goBack() }}>Go Back</div>
                                     </div>
-                                    <div className='downloadPDFDiv'>
-                                        <div id="downloadTheHighlightedPDF">Download the highlighted PDF</div>
-                                        <a href='http://localhost:5000/downloadaspdf' target="_blank">Click to Download</a>
+                                    <div className='download-div'>
+                                        <div className='downloadDiv' style={{ float: "left" }}>
+                                            <div id="downloadTheHighlightedPDF">Download the highlighted PDF</div>
+                                            <a href='http://localhost:5000/downloadaspdf' target="_blank">Click to Download</a>
+                                        </div>
+
+                                        <div className='downloadDiv' style={{ float: "right" }}>
+                                            <div id="downloadTheHighlightedPDF">Download the Detected Data</div>
+                                            <a href='http://localhost:5000/downloadaspdf' target="_blank">Download as CSV</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -143,12 +150,17 @@ class UploadPDF extends React.Component {
                             <div className="row">
                                 <div className="col-sm-6">
 
-                                    {this.state.beforeImages?.map((image_name) => (
-                                        <img src={"http://127.0.0.1:5000/getfile/" + image_name} className='image-style' />
+                                    {this.state.beforeImages?.map((image_name, index) => (
+                                        <>
+                                            <p className='pageNo'>Page {index + 1}</p><img src={"http://127.0.0.1:5000/getfile/" + image_name} className='image-style' />
+                                        </>
                                     ))}
                                 </div>
-                                {this.state.afterImages?.map((image_name) => (
-                                    <img src={"http://127.0.0.1:5000/gethighlightedfile/" + image_name} className='image-style' />
+
+                                {this.state.afterImages?.map((image_name, index) => (
+                                    <>
+                                        <p className='pageNo'>Page {index + 1}</p><img src={"http://127.0.0.1:5000/gethighlightedfile/" + image_name} className='image-style' />
+                                    </>
                                 ))}
                             </div>
                         </div>

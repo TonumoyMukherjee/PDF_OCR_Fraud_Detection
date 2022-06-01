@@ -74,7 +74,7 @@
     cursor: pointer;
 }
 
-.downloadPDFDiv{
+.downloadDiv{
     margin-top: 20px;
     height: max-content;
     width: max-content;
@@ -121,4 +121,18 @@ input{
       padding: 7px;
       background-color: #616161;
       border-radius: 10px;
+  }
+
+  .download-div{
+      width:500px;
+      height: 100px;
+      /* background-color: #606060; */
+      margin-right: auto;
+      margin-left: auto;
+  }
+
+  .pageNo{
+      color: rgb(33, 33, 33);
+      display: block;
+      margin: 10px;
   }
