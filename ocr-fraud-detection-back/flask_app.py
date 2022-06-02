@@ -253,6 +253,13 @@ class predict(Resource):
                         row_nbr += 1
                 # result['outlier_coordinates'] =  outlier_coordinates   
                 result['outlier_coord'] =  outlier_coord  
+
+                final_df = pd.DataFrame.from_dict(outlier_coord)
+                final_df.drop(['final_coord'], axis=1, inplace=True)
+                print(final_df) 
+                num_pages = len(os.listdir(name_var))
+                final_df.to_csv('AXIS_CSV/Outlier_report.csv')
+                
                 num_pages = len(os.listdir(name_var))
                 result['number_of_pages'] = num_pages 
                  
