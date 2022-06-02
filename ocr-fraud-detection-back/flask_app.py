@@ -372,11 +372,19 @@ def returnHighlightedFile(fileName):
     response.headers['my-custom-header'] = 'my-custom-status-0'
     return response
 
-# DOWNLOAD AS PDF
+# DOWNLOAD AS CSV
 @app.route('/downloadascsv')
 def downloadAsCsv():
     response = send_from_directory(path='./AXIS_CSV/',
                                    directory='./AXIS_CSV/', filename="Detailed_Outlier_Report.csv")
+    response.headers['my-custom-header'] = 'my-custom-status-0'
+    return response
+
+# DOWNLOAD AS PDF
+@app.route('/downloadaspdf')
+def downloadAsPdf():
+    response = send_from_directory(path='./AXIS_statement_pdf/',
+                                   directory='./AXIS_statement_pdf/', filename="Highlighted.pdf")
     response.headers['my-custom-header'] = 'my-custom-status-0'
     return response
 
