@@ -212,6 +212,11 @@ class predict(Resource):
                     # fout.write(csv)
         ALL_FILEPATHS = [name_var + "_out/" + f for f in os.listdir(name_var + "_out")]
         bank_statement_df, pages_retrieved, info = get_bank_statement_info(ALL_FILEPATHS)
+        # print(bank_statement_df["outliers"][0])
+        # bank_statement_df.to_csv("AXIS_CSV/bank_statement_df.csv")
+        bank_statement_df_outliers = bank_statement_df[bank_statement_df["outliers"] == True]
+        # print("bank_statement_df_outliers shape --> ", bank_statement_df_outliers.shape)
+        bank_statement_df_outliers.drop(['outliers'], axis=1, inplace=True)
         
         result = dict()
         
@@ -256,10 +261,12 @@ class predict(Resource):
 
                 final_df = pd.DataFrame.from_dict(outlier_coord)
                 final_df.drop(['final_coord'], axis=1, inplace=True)
+                print("FINAL DF SHAPE --> ", final_df.shape) 
                 print(final_df) 
                 num_pages = len(os.listdir(name_var))
-                final_df.to_csv('AXIS_CSV/Outlier_report.csv')
-
+                # final_df.to_csv('AXIS_CSV/Outlier_report.csv')
+                bank_statement_df_outliers.to_csv("AXIS_CSV/Detailed_Outlier_Report.csv")
+                
                 num_pages = len(os.listdir(name_var))
                 result['number_of_pages'] = num_pages 
                  
@@ -366,20 +373,13 @@ def returnHighlightedFile(fileName):
     return response
 
 # DOWNLOAD AS PDF
-@app.route('/downloadaspdf')
-def downloadAsPdf():
-    response = send_from_directory(path='./AXIS_statement_pdf/',
-                                   directory='./AXIS_statement_pdf/', filename="Highlighted.pdf")
-    response.headers['my-custom-header'] = 'my-custom-status-0'
-    return response
-
-# DOWNLOAD AS CSV
 @app.route('/downloadascsv')
 def downloadAsCsv():
     response = send_from_directory(path='./AXIS_CSV/',
-                                   directory='./AXIS_CSV/', filename="Outlier_report.csv")
+                                   directory='./AXIS_CSV/', filename="Detailed_Outlier_Report.csv")
     response.headers['my-custom-header'] = 'my-custom-status-0'
     return response
+
 
 
 
