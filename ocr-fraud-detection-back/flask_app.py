@@ -259,7 +259,7 @@ class predict(Resource):
                 print(final_df) 
                 num_pages = len(os.listdir(name_var))
                 final_df.to_csv('AXIS_CSV/Outlier_report.csv')
-                
+
                 num_pages = len(os.listdir(name_var))
                 result['number_of_pages'] = num_pages 
                  
@@ -373,6 +373,13 @@ def downloadAsPdf():
     response.headers['my-custom-header'] = 'my-custom-status-0'
     return response
 
+# DOWNLOAD AS CSV
+@app.route('/downloadascsv')
+def downloadAsCsv():
+    response = send_from_directory(path='./AXIS_CSV/',
+                                   directory='./AXIS_CSV/', filename="Outlier_report.csv")
+    response.headers['my-custom-header'] = 'my-custom-status-0'
+    return response
 
 
 

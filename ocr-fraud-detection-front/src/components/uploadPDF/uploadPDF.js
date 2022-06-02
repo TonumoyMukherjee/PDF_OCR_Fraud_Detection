@@ -138,7 +138,7 @@ class UploadPDF extends React.Component {
 
                                         <div className='downloadDiv' style={{ float: "right" }}>
                                             <div id="downloadTheHighlightedPDF">Download the Detected Data</div>
-                                            <a href='http://localhost:5000/downloadaspdf' target="_blank">Download as CSV</a>
+                                            <a href='http://localhost:5000/downloadascsv' >Download as CSV</a>
                                         </div>
                                     </div>
                                 </div>
